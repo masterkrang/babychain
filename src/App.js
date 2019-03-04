@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Input from '@material-ui/core/Input';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -9,13 +7,12 @@ import Button from '@material-ui/core/Button';
 const PARENTS = "parents";
 const BIRTHDATE = "birthdate";
 const BABYNAME = "babyname";
-const LOCATION = "location";
 const GENDER = "gender";
 const ADDRESS = "address";
 
-const styles = {
-  app: 'margin 0px auto'
-}
+// const styles = {
+//   app: 'margin 0px auto'
+// }
 
 class App extends Component {
 
