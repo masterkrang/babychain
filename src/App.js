@@ -6,6 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+const PARENTS = "parents";
+const BIRTHDATE = "birthdate";
+const BABYNAME = "babyname";
+const LOCATION = "location";
+const GENDER = "gender";
+const ADDRESS = "address";
 
 const styles = {
   app: 'margin 0px auto'
@@ -20,7 +26,8 @@ class App extends Component {
       birthdate: '',
       gender: '',
       address: '',
-      parents: ''
+      parents: '',
+      memo: ''
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -40,6 +47,7 @@ class App extends Component {
               placeholder="Satoshi Nakamoto Jr. III"
               margin="normal"
               fullWidth={true}
+              onChange={(evt) => this.handleChange(BABYNAME, evt)}
             />
           </Grid>
           <Grid item xs={12} lg={12}>
@@ -54,7 +62,7 @@ class App extends Component {
                 shrink: true,
               }}
               fullWidth={true}
-              onChange={this.handleChange}
+              onChange={(evt) => this.handleChange(BIRTHDATE, evt)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -66,7 +74,7 @@ class App extends Component {
               placeholder="Anything goes"
               margin="normal"
               fullWidth={true}
-              onChange={this.handleChange}
+              onChange={(evt) => this.handleChange(GENDER, evt)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -78,7 +86,7 @@ class App extends Component {
               placeholder="Full Address"
               margin="normal"
               fullWidth={true}
-              onChange={this.handleChange}
+              onChange={(evt) => this.handleChange(ADDRESS, evt)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -90,7 +98,7 @@ class App extends Component {
               placeholder="Bobby Johnson, Mary Stewart"
               margin="normal"
               fullWidth={true}
-              onChange={this.handleChange}
+              onChange={(evt) => this.handleChange(PARENTS, evt)}
             />
           </Grid>
           <Button
@@ -103,13 +111,36 @@ class App extends Component {
     );
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value.toUpperCase()});
-    console.log(event.target.value.toUpperCase())
+  handleChange(section, event) {
+    //console.log("section", section)
+    switch (section) {
+      case PARENTS:
+        this.setState({parents: event.target.value});
+        break;
+      case BABYNAME:
+        this.setState({babyName: event.target.value});
+        break;
+      case GENDER:
+        this.setState({gender: event.target.value});
+        break;
+      case ADDRESS:
+        this.setState({address: event.target.value});
+        break;
+      case BIRTHDATE:
+        this.setState({birthdate: event.target.value});
+        break;
+      default:
+        console.log("uh oh")
+    }
   }
 
   submitClicked() {
     console.log("submit clicked")
+    console.log(this.state)
+    let s = this.state;
+    let memo = `${s.babyName}|${s.birthdate}|${s.gender}|${s.address}|${s.parents}`
+
+    console.log("memo", memo)
   }
 }
 
