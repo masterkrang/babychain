@@ -5,9 +5,12 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "eosjs": "^16.0.9",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "scatterjs-core": "^2.7.16",
+    "scatterjs-plugin-eosjs2": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
