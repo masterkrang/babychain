@@ -191,7 +191,7 @@ class App extends Component {
             // Never assume the account's permission/authority. Always take it from the returned account.
             //const transactionOptions = { authorization:[`${account.name}@${account.authority}`] };
 
-            const tokenDetails = {contract:'eosio.token', symbol:'EOS', memo:'test babychain memo', decimals:4};
+            const tokenDetails = {contract:'eosio.token', symbol:'EOS', memo: this.state.memo, decimals:4};
             scatter.requestTransfer(network, 'eosdividendz', '0.001', tokenDetails).then(result => {
                 console.log('result', result);
             })
