@@ -195,7 +195,7 @@ class App extends Component {
                   }],
                   data: {
                       from: account.name,
-                      to: 'eosdividendz',
+                      to: 'proofofbirth',
                       quantity: '0.0001 EOS',
                       memo: 'test memo',
                   },
