@@ -196,8 +196,8 @@ class App extends Component {
                   data: {
                       from: account.name,
                       to: 'proofofbirth',
-                      quantity: '0.0001 EOS',
-                      memo: 'test memo',
+                      quantity: '0.001 EOS',
+                      memo: memo,
                   },
               }]
           }, {
