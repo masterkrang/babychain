@@ -5,8 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
 import ScatterJS from 'scatterjs-core';
-import ScatterEOS from 'scatterjs-plugin-eosjs2'
-import Eos from 'eosjs';
+import ScatterEOS from 'scatterjs-plugin-eosjs2';
+import {JsonRpc, Api} from 'eosjs';
 
 ScatterJS.plugins( new ScatterEOS() );
 
@@ -18,13 +18,23 @@ const ADDRESS = "address";
 const CHARLENGTH = 256;
 
 
-const network = {
+// const network = {
+//     blockchain:'eos',
+//     host: 'proxy.eosnode.tools',
+//     port:443,
+//     protocol:'https',
+//     chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
+// }
+
+const network = ScatterJS.Network.fromJson({
     blockchain:'eos',
-    host: 'proxy.eosnode.tools',
+    chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+    host:'nodes.get-scatter.com',
     port:443,
-    protocol:'https',
-    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
-}
+    protocol:'https'
+});
+
+const rpc = new JsonRpc(network.fullhost());
 
 class App extends Component {
 
@@ -166,41 +176,39 @@ class App extends Component {
 
     console.log("memo", memo)
 
-    ScatterJS.scatter.connect('babychain').then(connected => {
+    ScatterJS.connect('babychain', {network}).then(connected => {
+      if(!connected) return console.error('no scatter');
 
-        // If the user does not have Scatter or it is Locked or Closed this will return false;
-        if(!connected) return false;
+      const eos = ScatterJS.eos(network, Api, {rpc, beta3:true});
 
-        const scatter = ScatterJS.scatter;
+      ScatterJS.login().then(id => {
+          if(!id) return console.error('no identity');
+          const account = ScatterJS.account('eos');
 
-        // Now we need to get an identity from the user.
-        // We're also going to require an account that is connected to the network we're using.
-        const requiredFields = { accounts:[network] };
-        scatter.getIdentity(requiredFields).then(() => {
-
-            // Always use the accounts you got back from Scatter. Never hardcode them even if you are prompting
-            // the user for their account name beforehand. They could still give you a different account.
-            const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
-
-            // You can pass in any additional options you want into the eosjs reference.
-            const eosOptions = { expireInSeconds:60 };
-
-            // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
-            const eos = scatter.eos(network, Eos, eosOptions);
-
-            // Never assume the account's permission/authority. Always take it from the returned account.
-            //const transactionOptions = { authorization:[`${account.name}@${account.authority}`] };
-
-            const tokenDetails = {contract:'eosio.token', symbol:'EOS', memo: this.state.memo, decimals:4};
-            scatter.requestTransfer(network, 'eosdividendz', '0.001', tokenDetails).then(result => {
-                console.log('result', result);
-            })
-
-        }).catch(error => {
-            // The user rejected this request, or doesn't have the appropriate requirements.
-            console.log("rejected request")
-            console.error(error);
-        });
+          eos.transact({
+              actions: [{
+                  account: 'eosio.token',
+                  name: 'transfer',
+                  authorization: [{
+                      actor: account.name,
+                      permission: account.authority,
+                  }],
+                  data: {
+                      from: account.name,
+                      to: 'eosdividendz',
+                      quantity: '0.0001 EOS',
+                      memo: 'test memo',
+                  },
+              }]
+          }, {
+              blocksBehind: 3,
+              expireSeconds: 30,
+          }).then(res => {
+              console.log('sent: ', res);
+          }).catch(err => {
+              console.error('error: ', err);
+          });
+      });
     });
   }
 
